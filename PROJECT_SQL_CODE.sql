@@ -18,21 +18,22 @@ FOREIGN KEY (ESSN) REFERENCES EMPLOYEES(SSN)
 ON DELETE CASCADE); 
 
 CREATE TABLE BRANCH (
-Branch_Name		VARCHAR(50) NOT NULL,
-Branch_ID		INT NOT NULL,
-Assets			Decimal(19,4),
-B_Street		VARCHAR(50),
-B_City			VARCHAR(50),
-B_State			VARCHAR(50),
-B_Zip 		    VARCHAR(50),
-B_MNG_SSN		CHAR(11),
-B_ASSIST_SSN	CHAR(11),
-PRIMARY KEY (Branch_ID),
-FOREIGN KEY (B_MNG_SSN) REFERENCES EMPLOYEES(SSN) 
-ON DELETE CASCADE,
-FOREIGN KEY (B_ASSIST_SSN) REFERENCES EMPLOYEES(SSN) 
-ON DELETE CASCADE);
-/**
+Branch_Name VARCHAR(50) NOT NULL,
+Branch_ID INT PRIMARY KEY,
+Assets DECIMAL(19,4),
+B_MNG_SSN CHAR(11),
+B_ASSIST_SSN CHAR(11),
+FOREIGN KEY (B_MNG_SSN) REFERENCES EMPLOYEES(SSN) ON DELETE CASCADE,
+FOREIGN KEY (B_ASSIST_SSN) REFERENCES EMPLOYEES(SSN) ON DELETE CASCADE );
+
+CREATE TABLE BRANCH_LOCATION (
+Branch_ID INT PRIMARY KEY,
+B_Street VARCHAR(50),
+B_City VARCHAR(50),
+B_State VARCHAR(50),
+B_Zip VARCHAR(50),
+FOREIGN KEY (Branch_ID) REFERENCES BRANCH (Branch_ID) );
+
 /**Employee Branch_ID Constraint added after branch is made**/
 ALTER TABLE EMPLOYEES ADD CONSTRAINT FK_EMPLOYEES_BRANCH 
 FOREIGN KEY (Branch_ID) REFERENCES BRANCH(BRANCH_ID)
@@ -58,6 +59,7 @@ ON DELETE SET NULL);
 
 CREATE TABLE ACCOUNT (
 Acc_Num		        INT	            NOT NULL,
+Acc_Type         VARCHAR(30),
 Acc_Bal		        DECIMAL(19,4)   NOT NULL,
 Last_Access_Date	TIMESTAMP,         
 PRIMARY KEY (Acc_Num));
@@ -93,16 +95,20 @@ FOREIGN KEY (Acc_Num) REFERENCES ACCOUNT (Acc_Num)
 ON DELETE CASCADE);
 
 CREATE TABLE TRANSACT (
-Transact_Code 	VARCHAR(30) NOT NULL,
-Transact_Type 	VARCHAR(15), 
-Transact_Amount DECIMAL (19,4),
-Transact_Date 	DATE,
-Transact_Hour 	TIMESTAMP,
-Transact_Fee 	DECIMAL(19, 4),
-Acc_Num 		INT,
-PRIMARY KEY(Transact_Code),
-FOREIGN KEY (Acc_Num) REFERENCES ACCOUNT (Acc_Num)
-ON DELETE CASCADE);
+Transact_Code VARCHAR(30) PRIMARY KEY,
+Transact_Amount DECIMAL(19,4),
+Transact_Date DATE,
+Transact_Hour TIMESTAMP,
+Transact_Fee DECIMAL(19,4),
+Acc_Num INT,
+FOREIGN KEY (Acc_Num) REFERENCES ACCOUNT (Acc_Num) 
+ON DELETE CASCADE );
+
+CREATE TABLE TRANSACT_TYPE (
+Transact_Code VARCHAR(30) PRIMARY KEY,
+Transact_Type VARCHAR(15),
+FOREIGN KEY (Transact_Code) REFERENCES TRANSACT (Transact_code) 
+ON DELETE CASCADE );
 
 CREATE TABLE HELD_BY (
 CSSN		CHAR(11)	NOT NULL,
@@ -162,18 +168,32 @@ VALUES ('777-88-9999', 'Nancy', 'E', 'Davis');
 SELECT * FROM DEPENDENT;
 
 /* Branch table inserts */
-INSERT INTO BRANCH (Branch_Name, Branch_ID, Assets, B_Street, B_City, B_State, B_Zip, B_MNG_SSN, B_ASSIST_SSN)
-VALUES ('JC Branch', 1, 50000000.00, '42 Wallaby Way', 'Jersey City', 'New Jersey', '07305', '123-45-6789', NULL);
-INSERT INTO BRANCH (Branch_Name, Branch_ID, Assets, B_Street, B_City, B_State, B_Zip, B_MNG_SSN, B_ASSIST_SSN)
-VALUES ('LA Branch', 2, 80000000.00, '100 Steinway Avenue', 'Los Angeles', 'California', '90210', '987-65-4321', NULL);
-INSERT INTO BRANCH (Branch_Name, Branch_ID, Assets, B_Street, B_City, B_State, B_Zip, B_MNG_SSN, B_ASSIST_SSN)
-VALUES ('Manhattan Branch', 3, 100000000.00, '285 Fulton Street', 'New York City', 'New York', '10001', '111-22-3333', NULL);
-INSERT INTO BRANCH (Branch_Name, Branch_ID, Assets, B_Street, B_City, B_State, B_Zip, B_MNG_SSN, B_ASSIST_SSN)
-VALUES ('Newark Branch', 4, 45000000.00, '34  Liberty Place', 'Newark', 'New Jersey', '07101','444-55-6666', NULL);
-INSERT INTO BRANCH (Branch_Name, Branch_ID, Assets, B_Street, B_City, B_State, B_Zip, B_MNG_SSN, B_ASSIST_SSN)
-VALUES ('Union City Branch', 5, 30000000.00, '42 Palisade Way', 'Union City', 'New Jersey', '07087', '777-88-9999', NULL); 
+INSERT INTO BRANCH (Branch_Name, Branch_ID, Assets, B_MNG_SSN, B_ASSIST_SSN)
+VALUES ('JC Branch', 1, 50000000.00, '123-45-6789', NULL);
+INSERT INTO BRANCH (Branch_Name, Branch_ID, Assets, B_MNG_SSN, B_ASSIST_SSN)
+VALUES ('LA Branch', 2, 80000000.00, '987-65-4321', NULL);
+INSERT INTO BRANCH (Branch_Name, Branch_ID, Assets, B_MNG_SSN, B_ASSIST_SSN)
+VALUES ('Manhattan Branch', 3, 100000000.00, '111-22-3333', NULL);
+INSERT INTO BRANCH (Branch_Name, Branch_ID, Assets, B_MNG_SSN, B_ASSIST_SSN)
+VALUES ('Newark Branch', 4, 45000000.00, '444-55-6666', NULL);
+INSERT INTO BRANCH (Branch_Name, Branch_ID, Assets, B_MNG_SSN, B_ASSIST_SSN)
+VALUES ('Union City Branch', 5, 30000000.00, '777-88-9999', NULL); 
 
 SELECT * FROM BRANCH;
+
+/* Branch_location table inserts AFTER 3NF NORMALIZATION */
+INSERT INTO BRANCH_LOCATION (Branch_ID, Assets, B_Street, B_City, B_State, B_Zip)
+VALUES (1, '42 Wallaby Way', 'Jersey City', 'New Jersey', '07305');
+INSERT INTO BRANCH_LOCATION (Branch_ID, Assets, B_Street, B_City, B_State, B_Zip)
+VALUES (2, '100 Steinway Avenue', 'Los Angeles', 'California', '90210');
+INSERT INTO BRANCH_LOCATION (Branch_ID, Assets, B_Street, B_City, B_State, B_Zip)
+VALUES (3, '285 Fulton Street', 'New York City', 'New York', '10001');
+INSERT INTO BRANCH_LOCATION (Branch_ID, Assets, B_Street, B_City, B_State, B_Zip)
+VALUES (4, '34  Liberty Place', 'Newark', 'New Jersey', '07101');
+INSERT INTO BRANCH_LOCATION (Branch_ID, Assets, B_Street, B_City, B_State, B_Zip)
+VALUES (5, '42 Palisade Way', 'Union City', 'New Jersey', '07087'); 
+
+SELECT * FROM BRANCH_LOCATION;
 
 /*UPDATE EMPLOYEE NULL BRANCH_ID*/
 UPDATE Employees
@@ -219,50 +239,51 @@ SELECT * FROM CUSTOMER;
 
 /* Account table inserts */
 /* Need to insert 20 rows because each account must reference their respective disjoint specialization (4 account types X 5 customers) */ 
+/*ADDING ACCOUNT TYPE -- for clarity*/
 /*savings*/
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(101, 154323.00, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(102, 100000.00, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(103, 123.00, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(104, 1000.00, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(105, 11001.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(101, 'Savings', 154323.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(102, 'Savings', 100000.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(103, 'Savings', 123.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(104, 'Savings', 1000.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(105, 'Savings', 11001.00, CURRENT_TIMESTAMP);
 /*checking*/
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(201, 5000.00, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(202, 34000.00, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(203, 50.00, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(204, 500.00, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(205, 23001.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(201, 'Checking', 5000.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(202, 'Checking',  34000.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(203, 'Checking',  50.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(204, 'Checking',  500.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(205, 'Checking',  23001.00, CURRENT_TIMESTAMP);
 /*money market*/
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(301, 5500.00, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(302, 443000.00, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(303, 50.00, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(304, 300.00, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(305, 43001.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(301, 'Money Market', 5500.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(302, 'Money Market', 443000.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(303, 'Money Market', 50.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(304, 'Money Market', 300.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(305, 'Money Market', 43001.00, CURRENT_TIMESTAMP);
 /*loan*/
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(401, 5300.00, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(402, 44300.23, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(403, 803.58, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(404, 30000.01, CURRENT_TIMESTAMP);
-INSERT INTO ACCOUNT (Acc_Num , Acc_Bal, Last_Access_Date)
-VALUES(405, 43001.93, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(401, 'Loan', 5300.00, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(402, 'Loan', 44300.23, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(403, 'Loan', 803.58, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(404, 'Loan', 30000.01, CURRENT_TIMESTAMP);
+INSERT INTO ACCOUNT (Acc_Num , Acc_Type, Acc_Bal, Last_Access_Date)
+VALUES(405, 'Loan', 43001.93, CURRENT_TIMESTAMP);
 
 SELECT * FROM ACCOUNT;
  
@@ -322,18 +343,31 @@ VALUES(405, 11.321, 185.47, 18990.00);
 
 SELECT * FROM LOAN;
 
-INSERT INTO TRANSACT (Transact_Code, Transact_Type, Transact_Amount, Transact_Date, Transact_Hour, Transact_Fee, Acc_Num)
-VALUES ('D1001', 'Deposit', 500.00, str_to_date('02/02/1934','%m/%d/%Y'), TIMESTAMP('2022-05-08 14:30:45') , 0.00, 101);
-INSERT INTO TRANSACT (Transact_Code, Transact_Type, Transact_Amount, Transact_Date, Transact_Hour, Transact_Fee, Acc_Num)
-VALUES ('W1002', 'Withdrawal', 200.00, str_to_date('02/02/1935','%m/%d/%Y'), TIMESTAMP('2022-05-08 14:30:45'), 2.50, 102);
-INSERT INTO TRANSACT (Transact_Code, Transact_Type, Transact_Amount, Transact_Date, Transact_Hour, Transact_Fee, Acc_Num)
-VALUES ('T1003', 'Transfer', 150.00, str_to_date('02/02/1936','%m/%d/%Y'), TIMESTAMP('2022-05-08 14:30:45'), 1.00, 103);
-INSERT INTO TRANSACT (Transact_Code, Transact_Type, Transact_Amount, Transact_Date, Transact_Hour, Transact_Fee, Acc_Num)
-VALUES ('D1004', 'Deposit', 1000.00, str_to_date('02/02/1937','%m/%d/%Y'), TIMESTAMP('2022-05-08 14:30:45'), 0.00, 104);
-INSERT INTO TRANSACT (Transact_Code, Transact_Type, Transact_Amount, Transact_Date, Transact_Hour, Transact_Fee, Acc_Num)
-VALUES ('P1005', 'Payment', 185.47, str_to_date('02/02/1938','%m/%d/%Y'), TIMESTAMP('2022-05-08 14:30:45'), 1.00, 405);
+INSERT INTO TRANSACT (Transact_Code, Transact_Amount, Transact_Date, Transact_Hour, Transact_Fee, Acc_Num)
+VALUES ('D1001', 500.00, str_to_date('02/02/1934','%m/%d/%Y'), TIMESTAMP('2022-05-08 14:30:45') , 0.00, 101);
+INSERT INTO TRANSACT (Transact_Code, Transact_Amount, Transact_Date, Transact_Hour, Transact_Fee, Acc_Num)
+VALUES ('W1002', 200.00, str_to_date('02/02/1935','%m/%d/%Y'), TIMESTAMP('2022-05-08 14:30:45'), 2.50, 102);
+INSERT INTO TRANSACT (Transact_Code, Transact_Amount, Transact_Date, Transact_Hour, Transact_Fee, Acc_Num)
+VALUES ('T1003', 150.00, str_to_date('02/02/1936','%m/%d/%Y'), TIMESTAMP('2022-05-08 14:30:45'), 1.00, 103);
+INSERT INTO TRANSACT (Transact_Code, Transact_Amount, Transact_Date, Transact_Hour, Transact_Fee, Acc_Num)
+VALUES ('D1004', 1000.00, str_to_date('02/02/1937','%m/%d/%Y'), TIMESTAMP('2022-05-08 14:30:45'), 0.00, 104);
+INSERT INTO TRANSACT (Transact_Code, Transact_Amount, Transact_Date, Transact_Hour, Transact_Fee, Acc_Num)
+VALUES ('P1005', 185.47, str_to_date('02/02/1938','%m/%d/%Y'), TIMESTAMP('2022-05-08 14:30:45'), 1.00, 405);
 
 SELECT * FROM TRANSACT;
+
+INSERT INTO TRANSACT_TYPE (Transact_Code, Transact_Type)
+VALUES ('D1001', 'Deposit');
+INSERT INTO TRANSACT_TYPE (Transact_Code, Transact_Type)
+VALUES ('W1002', 'Withdrawal');
+INSERT INTO TRANSACT_TYPE (Transact_Code, Transact_Type)
+VALUES ('T1003', 'Transfer');
+INSERT INTO TRANSACT_TYPE (Transact_Code, Transact_Type)
+VALUES ('D1004', 'Deposit');
+INSERT INTO TRANSACT_TYPE (Transact_Code, Transact_Type)
+VALUES ('P1005', 'Payment');
+
+SELECT * FROM TRANSACT_TYPE;
 
 /* Next are the relationship tables */ 
 
