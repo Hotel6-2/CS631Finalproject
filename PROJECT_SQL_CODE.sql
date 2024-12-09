@@ -8,6 +8,7 @@ Start_Date	DATE,
 BRANCH_ID	INT,
 PRIMARY KEY (SSN));
 
+
 CREATE TABLE DEPENDENT (
 ESSN	CHAR (11)		NOT NULL,
 D_FName	VARCHAR(50) 	NOT NULL,
@@ -101,9 +102,9 @@ Transact_Amount DECIMAL(19,4),
 Transact_Date DATE,
 Transact_Hour TIMESTAMP,
 Transact_Fee DECIMAL(19,4),
-Acc_Num INT,
+/*Acc_Num INT,
 FOREIGN KEY (Acc_Num) REFERENCES ACCOUNT (Acc_Num) 
-ON DELETE CASCADE );
+ON DELETE CASCADE ); should most likely be removed*/ 
 
 CREATE TABLE TRANSACT_TYPE (
 Transact_Code VARCHAR(30) PRIMARY KEY,
