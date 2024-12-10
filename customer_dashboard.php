@@ -39,7 +39,7 @@
 <body>
     <h1>Customer Dashboard</h1>
     <a href="add_customer.php">Manage Customer</a><br>
-    <a href="view_Branches.php">View Branches</a><br>
+    <a href="view_branches.php">View Branches</a><br>
     <a href="view_Accounts.php">View Accounts</a><br>
     <a href="add_account.php">Manage Accounts</a><br>
     <br>

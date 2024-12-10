@@ -139,7 +139,25 @@ ON DELETE CASCADE,
 FOREIGN KEY (Acc_Num) REFERENCES ACCOUNT (Acc_Num)
 ON DELETE CASCADE);
 
+CREATE TABLE users (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    user_type VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+
+
 /** TABLE INSERTS **/
+
+INSERT INTO users (username, password, user_type) 
+VALUES ('admintest', 'test', 'administrator');
+INSERT INTO users (username, password, user_type) 
+VALUES ('custtest', 'test', 'customer');
+INSERT INTO users (username, password, user_type) 
+VALUES ('emptest', 'test', 'employee');
+
 
 /* Employees table inserts */
 INSERT INTO EMPLOYEES (SSN, E_FName, E_MName, E_LName, Phone, Start_Date, Branch_ID)
