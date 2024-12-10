@@ -1,12 +1,14 @@
 
 <?php
+// error display reports
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-// Database connection file
+
+// Database connection settings 
 
 $servername = "localhost";
 $username = "root";
-$password = ""; // Default password for XAMPP is empty
+$password = ""; 
 $dbname = "BankDB";
 
 // Create connection

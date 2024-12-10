@@ -62,9 +62,9 @@
         <a href="view_customers.php" class="button">View Customers</a>
         <a href="add_customer.php" class="button">Manage Customers</a>
         <a href="view_branches.php" class="button">View Branches</a>
-        <a href="add_branch.php" class="button">Manage Branches</a>
+       <!-- <a href="add_branch.php" class="button">Manage Branches</a> -->
         <a href="view_accounts.php" class="button">View Accounts</a>
-        <a href="add_account.php" class="button">Manage Accounts</a>
+        <!--  <a href="add_account.php" class="button">Manage Accounts</a> -->
         <a href="index.php" id="home-button" class="button">Home</a>
     </div>
 

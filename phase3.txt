@@ -1,0 +1,30 @@
+
+
+2- This report should minimally summarize the business requirements and any additions you
+may have made, the entity-relationship design, the (relational) logical database design, and
+the application program design. For each of these, you should identify the major design
+decisions you faced and the design decisions you made with justifications for those decisions.
+The application program design should have at least three web pages to connect to the
+database. You may choose any language and platform for your application program.
+3- Normalize the Relations: The steps to follow for three relations are:
+a) Write out the relation (schema) including all attribute names. Indicate keys and foreign
+keys.
+b) Provide some sample data for the relation (5 rows).
+c) State the Key for the relation and write down Functional Dependencies.
+d) State that this relation is in 3NF.
+If a relation fails to meet the definition of a third normal form (e.g., it contains a partial-
+key dependency or it contains a transitive dependency), then split the relation into new
+relations.
+Begin the normalization process from the beginning with each of these new relations.
+4- Write four queries in English and answer in SQL code, show a screen dump or SNIP
+that shows the SQL code and the result (You may use the same queries from Phase II).
+Write four SQL Queries;
+1 contains GROUP BY
+1 contains GROUP BY and HAVING
+1 contains nested query with ALL
+1 contains nested query with IN
+5- A narrative conclusion section that describes:
+a) the group's experience with the project (which steps were the most difficult? Which were
+the easiest? What did you learn that you did not imagine you would have? If you had to do it
+all over again, what would you have done differently?)
+b) any final comments and conclusions.
